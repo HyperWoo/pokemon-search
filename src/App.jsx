@@ -1,10 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function App() {
   const [search, setSearch] = useState("");          // What user types
   const [pokemonData, setPokemonData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [debounce, setDebounce] = useState(search);
+
+  useEffect(() => {
+    const id = setTimeout(() => setDebounce(search), 400);
+    return () => clearTimeout(id);
+  }, [search]);
+
+  useEffect(() => {
+    if(!debounce) return;
+
+  }, [debounce]);
 
   const handleSearch = async () => {
     if (!search) return;
@@ -45,6 +56,7 @@ export default function App() {
           placeholder="Enter Pokémon name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => {if (e.key === 'Enter') handleSearch(); }}
           className="border px-3 py-1 rounded"
         />
         <button
